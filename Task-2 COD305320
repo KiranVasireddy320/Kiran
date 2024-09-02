@@ -1,0 +1,216 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+// Patient class to store patient details
+class Patient {
+    private String name;
+    private int age;
+    private String ailment;
+
+    public Patient(String name, int age, String ailment) {
+        this.name = name;
+        this.age = age;
+        this.ailment = ailment;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public String getAilment() {
+        return ailment;
+    }
+
+    @Override
+    public String toString() {
+        return "Patient Name: " + name + ", Age: " + age + ", Ailment: " + ailment;
+    }
+}
+
+// Doctor class to store doctor details
+class Doctor {
+    private String name;
+    private String specialization;
+
+    public Doctor(String name, String specialization) {
+        this.name = name;
+        this.specialization = specialization;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSpecialization() {
+        return specialization;
+    }
+
+    @Override
+    public String toString() {
+        return "Doctor Name: " + name + ", Specialization: " + specialization;
+    }
+}
+
+// Appointment class to manage appointments
+class Appointment {
+    private Patient patient;
+    private Doctor doctor;
+
+    public Appointment(Patient patient, Doctor doctor) {
+        this.patient = patient;
+        this.doctor = doctor;
+    }
+
+    @Override
+    public String toString() {
+        return "Appointment: [Patient: " + patient.getName() + ", Doctor: " + doctor.getName() + "]";
+    }
+}
+
+// Hospital class to manage the hospital operations
+class Hospital {
+    private ArrayList<Patient> patients = new ArrayList<>();
+    private ArrayList<Doctor> doctors = new ArrayList<>();
+    private ArrayList<Appointment> appointments = new ArrayList<>();
+
+    // Add patient
+    public void addPatient(Patient patient) {
+        patients.add(patient);
+        System.out.println("Patient added: " + patient.getName());
+    }
+
+    // Add doctor
+    public void addDoctor(Doctor doctor) {
+        doctors.add(doctor);
+        System.out.println("Doctor added: " + doctor.getName());
+    }
+
+    // Schedule appointment
+    public void scheduleAppointment(Patient patient, Doctor doctor) {
+        appointments.add(new Appointment(patient, doctor));
+        System.out.println("Appointment scheduled for " + patient.getName() + " with Dr. " + doctor.getName());
+    }
+
+    // View all patients
+    public void viewPatients() {
+        if (patients.isEmpty()) {
+            System.out.println("No patients found.");
+        } else {
+            for (Patient p : patients) {
+                System.out.println(p);
+            }
+        }
+    }
+
+    // View all doctors
+    public void viewDoctors() {
+        if (doctors.isEmpty()) {
+            System.out.println("No doctors found.");
+        } else {
+            for (Doctor d : doctors) {
+                System.out.println(d);
+            }
+        }
+    }
+
+    // View all appointments
+    public void viewAppointments() {
+        if (appointments.isEmpty()) {
+            System.out.println("No appointments scheduled.");
+        } else {
+            for (Appointment a : appointments) {
+                System.out.println(a);
+            }
+        }
+    }
+}
+
+// Main class to interact with the hospital system
+public class HospitalManagementSystem {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Hospital hospital = new Hospital();
+
+        while (true) {
+            System.out.println("\nHospital Management System");
+            System.out.println("1. Add Patient");
+            System.out.println("2. Add Doctor");
+            System.out.println("3. Schedule Appointment");
+            System.out.println("4. View Patients");
+            System.out.println("5. View Doctors");
+            System.out.println("6. View Appointments");
+            System.out.println("7. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter patient name: ");
+                    String patientName = scanner.nextLine();
+                    System.out.print("Enter patient age: ");
+                    int age = scanner.nextInt();
+                    scanner.nextLine(); // Consume newline
+                    System.out.print("Enter patient ailment: ");
+                    String ailment = scanner.nextLine();
+                    hospital.addPatient(new Patient(patientName, age, ailment));
+                    break;
+                case 2:
+                    System.out.print("Enter doctor name: ");
+                    String doctorName = scanner.nextLine();
+                    System.out.print("Enter doctor specialization: ");
+                    String specialization = scanner.nextLine();
+                    hospital.addDoctor(new Doctor(doctorName, specialization));
+                    break;
+                case 3:
+                    System.out.print("Enter patient name: ");
+                    String pName = scanner.nextLine();
+                    Patient patient = null;
+                    for (Patient p : hospital.patients) {
+                        if (p.getName().equals(pName)) {
+                            patient = p;
+                            break;
+                        }
+                    }
+                    if (patient == null) {
+                        System.out.println("Patient not found.");
+                        break;
+                    }
+                    System.out.print("Enter doctor name: ");
+                    String dName = scanner.nextLine();
+                    Doctor doctor = null;
+                    for (Doctor d : hospital.doctors) {
+                        if (d.getName().equals(dName)) {
+                            doctor = d;
+                            break;
+                        }
+                    }
+                    if (doctor == null) {
+                        System.out.println("Doctor not found.");
+                        break;
+                    }
+                    hospital.scheduleAppointment(patient, doctor);
+                    break;
+                case 4:
+                    hospital.viewPatients();
+                    break;
+                case 5:
+                    hospital.viewDoctors();
+                    break;
+                case 6:
+                    hospital.viewAppointments();
+                    break;
+                case 7:
+                    System.out.println("Exiting...");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+}
