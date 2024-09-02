@@ -1,0 +1,65 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import org.json.JSONObject;
+
+public class WeatherForecastApp {
+
+    private static final String API_KEY = "YOUR_API_KEY";
+    private static final String BASE_URL = "http://api.openweathermap.org/data/2.5/weather?q=";
+
+    public static void main(String[] args) {
+        String city = "London"; // Change to any city you want to check the weather for
+        getWeatherData(city);
+    }
+
+    public static void getWeatherData(String city) {
+        try {
+            String urlString = BASE_URL + city + "&appid=" + API_KEY + "&units=metric";
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            int responseCode = connection.getResponseCode();
+
+            if (responseCode == 200) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String inputLine;
+                StringBuffer content = new StringBuffer();
+
+                while ((inputLine = in.readLine()) != null) {
+                    content.append(inputLine);
+                }
+                
+                in.close();
+                connection.disconnect();
+
+                parseWeatherData(content.toString());
+            } else {
+                System.out.println("Error: Unable to fetch weather data.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void parseWeatherData(String jsonData) {
+        try {
+            JSONObject jsonObject = new JSONObject(jsonData);
+            JSONObject main = jsonObject.getJSONObject("main");
+            double temp = main.getDouble("temp");
+            int humidity = main.getInt("humidity");
+            JSONObject weather = jsonObject.getJSONArray("weather").getJSONObject(0);
+            String description = weather.getString("description");
+
+            System.out.println("Current Weather:");
+            System.out.println("Temperature: " + temp + "°C");
+            System.out.println("Humidity: " + humidity + "%");
+            System.out.println("Condition: " + description);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
