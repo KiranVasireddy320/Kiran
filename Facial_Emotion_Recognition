@@ -1,0 +1,985 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "toc_visible": true,
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/KiranVasireddy320/Kiran/blob/main/Facial_Emotion_Recognition\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Facial Emotions Recognition CNN"
+      ],
+      "metadata": {
+        "id": "sKmOUE2nSZky"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Defining the metric of success"
+      ],
+      "metadata": {
+        "id": "NyGPodIBSi9x"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "This project will be a success when we accurately predict emotion from the facial features."
+      ],
+      "metadata": {
+        "id": "GntkgsX8Snyr"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Objectives of project\n",
+        "To apply Convolutional neural networks (CNN) for facial expression/emotions recognition.\n",
+        "\n",
+        "To correctly classify each facial image into one of the seven facial emotion categories: anger, disgust, fear, happiness, sadness, surprise, and neutral.\n",
+        "\n",
+        "The training set consists of 28,709 examples and the public test set consists of 7,178 examples."
+      ],
+      "metadata": {
+        "id": "IamL43-hRqWK"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Data Relevance"
+      ],
+      "metadata": {
+        "id": "ZQvQl0czSY6z"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "We have used the FER-2013 dataset.\n",
+        "\n",
+        "The data consists of 48x48 pixel grayscale images of faces.\n",
+        "\n",
+        "The faces have been automatically registered so that the face is more or less centred and occupies about the same amount of space in each image.\n",
+        "\n",
+        "The task is to categorize each face based on the emotion shown in the facial expression into one of seven categories (0=Angry, 1=Disgust, 2=Fear, 3=Happy, 4=Sad, 5=Surprise, 6=Neutral).\n",
+        "\n",
+        "The training set consists of 28,709 examples and the public test set consists of 3,589 examples.\n"
+      ],
+      "metadata": {
+        "id": "CAnusjbLTGTQ"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# 1.0 Importing the Libraries"
+      ],
+      "metadata": {
+        "id": "W1o9FIDjUFcy"
+      }
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "id": "wyAQn5GIQ7aS",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 401
+        },
+        "outputId": "0f9fef77-a1f4-4728-aba6-23a042208141"
+      },
+      "outputs": [
+        {
+          "output_type": "error",
+          "ename": "ImportError",
+          "evalue": "cannot import name 'ImageDataGenerator' from 'keras.preprocessing.image' (/usr/local/lib/python3.11/dist-packages/keras/api/preprocessing/image/__init__.py)",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mImportError\u001b[0m                               Traceback (most recent call last)",
+            "\u001b[0;32m/tmp/ipython-input-1-3378954559.py\u001b[0m in \u001b[0;36m<cell line: 0>\u001b[0;34m()\u001b[0m\n\u001b[1;32m     11\u001b[0m \u001b[0;32mfrom\u001b[0m \u001b[0mkeras\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0moptimizers\u001b[0m \u001b[0;32mimport\u001b[0m \u001b[0mAdam\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     12\u001b[0m \u001b[0;32mfrom\u001b[0m \u001b[0mkeras\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mregularizers\u001b[0m \u001b[0;32mimport\u001b[0m \u001b[0ml2\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 13\u001b[0;31m \u001b[0;32mfrom\u001b[0m \u001b[0mkeras\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mpreprocessing\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mimage\u001b[0m \u001b[0;32mimport\u001b[0m \u001b[0mImageDataGenerator\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     14\u001b[0m \u001b[0;32mfrom\u001b[0m \u001b[0msklearn\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mmetrics\u001b[0m \u001b[0;32mimport\u001b[0m \u001b[0mclassification_report\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mconfusion_matrix\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     15\u001b[0m \u001b[0;32mimport\u001b[0m \u001b[0mmatplotlib\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mpyplot\u001b[0m \u001b[0;32mas\u001b[0m \u001b[0mplt\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;31mImportError\u001b[0m: cannot import name 'ImageDataGenerator' from 'keras.preprocessing.image' (/usr/local/lib/python3.11/dist-packages/keras/api/preprocessing/image/__init__.py)",
+            "",
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0;32m\nNOTE: If your import is failing due to a missing package, you can\nmanually install dependencies using either !pip or !apt.\n\nTo view examples of installing some common dependencies, click the\n\"Open Examples\" button below.\n\u001b[0;31m---------------------------------------------------------------------------\u001b[0m\n"
+          ],
+          "errorDetails": {
+            "actions": [
+              {
+                "action": "open_url",
+                "actionText": "Open Examples",
+                "url": "/notebooks/snippets/importing_libraries.ipynb"
+              }
+            ]
+          }
+        }
+      ],
+      "source": [
+        "import numpy as np # linear algebra\n",
+        "import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)\n",
+        "\n",
+        "from keras.utils import to_categorical\n",
+        "from keras.callbacks import EarlyStopping\n",
+        "from keras.models import Sequential\n",
+        "from keras.layers import Dense, Dropout, Activation, Flatten\n",
+        "from keras.layers import Conv2D, MaxPooling2D, BatchNormalization\n",
+        "from keras.losses import categorical_crossentropy\n",
+        "from sklearn.metrics import accuracy_score\n",
+        "from keras.optimizers import Adam\n",
+        "from keras.regularizers import l2\n",
+        "from keras.preprocessing.image import ImageDataGenerator\n",
+        "from sklearn.metrics import classification_report, confusion_matrix\n",
+        "import matplotlib.pyplot as plt\n",
+        "import seaborn as sns"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#2.0 Connecting to MyDrive"
+      ],
+      "metadata": {
+        "id": "Ql6pA_s1Wc0f"
+      }
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "8JjqJ18aOFIU"
+      },
+      "outputs": [],
+      "source": [
+        "from google.colab import drive\n",
+        "drive.mount('/content/drive/')"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#3.0 Loading the Dataset"
+      ],
+      "metadata": {
+        "id": "p38eMXlUciv7"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Path to the directory\n",
+        "data = pd.read_csv('/content/drive/MyDrive/fer2013.csv')"
+      ],
+      "metadata": {
+        "id": "aLn0xKB1ZR_u"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#4.0 Dataset Overview"
+      ],
+      "metadata": {
+        "id": "UAivzgh1ctsk"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# check for the shape of dataset\n",
+        "data.shape"
+      ],
+      "metadata": {
+        "id": "MHEVvXR1Zyiv"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "The dataset has 3 columns and 35887 rows"
+      ],
+      "metadata": {
+        "id": "IId_2VVwbz97"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "data.isnull().sum()"
+      ],
+      "metadata": {
+        "id": "tAGhyz4UqZ8i"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#preview first 5 row of data\n",
+        "data.head(5)"
+      ],
+      "metadata": {
+        "id": "O-Izv77mb6kd"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#check usage values\n",
+        "#80% training, 10% validation and 10% test\n",
+        "data.Usage.value_counts()"
+      ],
+      "metadata": {
+        "id": "rHNg9CdJcA4M"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#check target labels\n",
+        "emotion_map = {0: 'Angry', 1: 'Digust', 2: 'Fear', 3: 'Happy', 4: 'Sad', 5: 'Surprise', 6: 'Neutral'}\n",
+        "emotion_counts = data['emotion'].value_counts(sort=False).reset_index()\n",
+        "emotion_counts.columns = ['emotion', 'number']\n",
+        "emotion_counts['emotion'] = emotion_counts['emotion'].map(emotion_map)\n",
+        "emotion_counts"
+      ],
+      "metadata": {
+        "id": "vF49mIN8cJhF"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#5.0 Exploratory Data Analysis"
+      ],
+      "metadata": {
+        "id": "ql_YNqqHc1dL"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## 5.1 BarGraph"
+      ],
+      "metadata": {
+        "id": "K43D5uEDdAvi"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Plotting a bar graph of the class distributions\n",
+        "plt.figure(figsize=(6,4))\n",
+        "sns.barplot(emotion_counts.emotion, emotion_counts.number)\n",
+        "plt.title('Class distribution')\n",
+        "plt.ylabel('Number', fontsize=12)\n",
+        "plt.xlabel('Emotions', fontsize=12)\n",
+        "plt.show()"
+      ],
+      "metadata": {
+        "id": "3Hz-7ZIfcL_-"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "A view of some of the images"
+      ],
+      "metadata": {
+        "id": "uqTblDCodabU"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def row2image(row):\n",
+        "    pixels, emotion = row['pixels'], emotion_map[row['emotion']]\n",
+        "    img = np.array(pixels.split())\n",
+        "    img = img.reshape(48,48)\n",
+        "    image = np.zeros((48,48,3))\n",
+        "    image[:,:,0] = img\n",
+        "    image[:,:,1] = img\n",
+        "    image[:,:,2] = img\n",
+        "    return np.array([image.astype(np.uint8), emotion])\n",
+        "\n",
+        "plt.figure(0, figsize=(16,10))\n",
+        "for i in range(1,8):\n",
+        "    face = data[data['emotion'] == i-1].iloc[0]\n",
+        "    img = row2image(face)\n",
+        "    plt.subplot(2,4,i)\n",
+        "    plt.imshow(img[0])\n",
+        "    plt.title(img[1])\n",
+        "\n",
+        "plt.show()"
+      ],
+      "metadata": {
+        "id": "-G_obvI_dWzt"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#6.0 Pre-processing data"
+      ],
+      "metadata": {
+        "id": "4-w6Bsl2diGD"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "1. Shuffling the data\n",
+        "\n",
+        "2. One hot encoding -  to change the categorical labels as numeric labels to learning algorithm can work better in predictions process\n",
+        "\n",
+        "3. Standardization - We will change the data structure to feed the standart scaler to implement standardization process to our data. Since StandartScaler() function only takes 2 dimensional array we will reshape the data then apply our scaler to make the mean zero and standart deviation as unit.\n",
+        "\n",
+        "4. Reshaping the data (48,48) - to make our image pixels ready to split operation\n",
+        "\n",
+        "5. Train test validation split - we have 35887 images with each containing 48x48 pixels. We will split the data into train,test and Validation data to feed and evaluate and validate our data with the ratio of 10%\n",
+        "\n",
+        "6. Data augmentation using ImageDataGenerator - We can do data augmentation to have more data to train and validate our model to prevent overfitting. Data augmentation can be done on training and validation sets as it helps the model become more generalize and robust.\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "RNgA7G7mdqxL"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Shuffling the data"
+      ],
+      "metadata": {
+        "id": "nAfxRDfjsbI9"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "data = data.sample(frac=1)"
+      ],
+      "metadata": {
+        "id": "tCQS1CcZsW3e"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## One Hot Encoding"
+      ],
+      "metadata": {
+        "id": "I45SA4JQsiat"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Then, we will do one hot encoding operation to change the categorical labels as numeric labels to learning algorithm can work better in predictions process."
+      ],
+      "metadata": {
+        "id": "VICJHGvAsoeO"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "labels = to_categorical(data[['emotion']], num_classes=7)"
+      ],
+      "metadata": {
+        "id": "05vAhNupsu9W"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Changing image pixels to Numpy array"
+      ],
+      "metadata": {
+        "id": "qTm5JtMMsx6A"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "train_pixels = data[\"pixels\"].astype(str).str.split(\" \").tolist()\n",
+        "train_pixels = np.uint8(train_pixels)"
+      ],
+      "metadata": {
+        "id": "cuQJGZscs2lh"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "##  Standardization"
+      ],
+      "metadata": {
+        "id": "yrM1E5mKtEY-"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "We will change the data structure to feed the standart scaler to implement standardization process to our data. Since StandartScaler() function only takes 2 dimensional array we will reshape the data then apply our scaler to make the mean zero and standart deviation as unit."
+      ],
+      "metadata": {
+        "id": "Q3m57aa7tSQW"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "pixels = train_pixels.reshape((35887*2304,1))"
+      ],
+      "metadata": {
+        "id": "TwhvsQSBtRPP"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from sklearn.preprocessing import StandardScaler\n",
+        "scaler = StandardScaler()\n",
+        "pixels = scaler.fit_transform(pixels)"
+      ],
+      "metadata": {
+        "id": "hxlcR_Q_tdO8"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Reshaping the data (48,48)"
+      ],
+      "metadata": {
+        "id": "6ZkxoF_Ntx7m"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "After that, we will reshape the data to make our image pixels ready to split operation"
+      ],
+      "metadata": {
+        "id": "_JxcyPwrt3N-"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "pixels = train_pixels.reshape((35887, 48, 48,1))"
+      ],
+      "metadata": {
+        "id": "c7O670tStvKy"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Train test validation split"
+      ],
+      "metadata": {
+        "id": "4KgA1b4BuDKN"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Now, we have 35887 images with each containing 48x48 pixels. We will split the data into train,test and Validation data to feed and evaluate and validate our data with the ratio of 10%."
+      ],
+      "metadata": {
+        "id": "Ajm4rXwKuIr7"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from sklearn.model_selection import train_test_split\n",
+        "X_train, X_test, y_train, y_test = train_test_split(pixels, labels, test_size=0.1, shuffle=False)\n",
+        "X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1, shuffle=False)"
+      ],
+      "metadata": {
+        "id": "AIdpM5UIuG43"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(X_train.shape)\n",
+        "print(X_test.shape)\n",
+        "print(X_val.shape)"
+      ],
+      "metadata": {
+        "id": "h3PRnFJbtvRX"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "We can see some train data containing one sample of each class with the help of this plot code."
+      ],
+      "metadata": {
+        "id": "SWKPkwy8uc0v"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "plt.figure(figsize=(15,23))\n",
+        "label_dict = {0 : 'Angry', 1 : 'Disgust', 2 : 'Fear', 3 : 'Happiness', 4 : 'Sad', 5 : 'Surprise', 6 : 'Neutral'}\n",
+        "i = 1\n",
+        "for i in range (7):\n",
+        "    img = np.squeeze(X_train[i])\n",
+        "    plt.subplot(1,7,i+1)\n",
+        "    plt.imshow(img)\n",
+        "    index = np.argmax(y_train[i])\n",
+        "    plt.title(label_dict[index])\n",
+        "    plt.axis('off')\n",
+        "    i += 1\n",
+        "plt.show()"
+      ],
+      "metadata": {
+        "id": "Oe3akMWdtvUt"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Data augmentation using ImageDataGenerator"
+      ],
+      "metadata": {
+        "id": "R5yq0t6Muknn"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "We can do data augmentation to have more data to train and validate our model to prevent overfitting. Data augmentation can be done on training and validation sets as it helps the model become more generalize and robust."
+      ],
+      "metadata": {
+        "id": "JUzGxbxxuozI"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "datagen = ImageDataGenerator(  width_shift_range = 0.1,\n",
+        "                               height_shift_range = 0.1,\n",
+        "                               horizontal_flip = True,\n",
+        "                               zoom_range = 0.2)\n",
+        "valgen = ImageDataGenerator(   width_shift_range = 0.1,\n",
+        "                               height_shift_range = 0.1,\n",
+        "                               horizontal_flip = True,\n",
+        "                               zoom_range = 0.2)"
+      ],
+      "metadata": {
+        "id": "XF9ADZRrujIA"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "datagen.fit(X_train)\n",
+        "valgen.fit(X_val)"
+      ],
+      "metadata": {
+        "id": "fhJ1k-kstval"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "train_generator = datagen.flow(X_train, y_train, batch_size=64)\n",
+        "val_generator = datagen.flow(X_val, y_val, batch_size=64)"
+      ],
+      "metadata": {
+        "id": "aQPWxejOuux0"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Our dataset is ready to feed our model. We will look at our model architecture."
+      ],
+      "metadata": {
+        "id": "1WmxLMiHuzp2"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#7.0 Building CNN Model"
+      ],
+      "metadata": {
+        "id": "Di8x26vee848"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Designing a model"
+      ],
+      "metadata": {
+        "id": "XVoRp7KjvrRw"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "CNN model has many layers with different units such as Convolutional layer, Max pooling layer, Batch normalization and Drop out layer to regularize the model."
+      ],
+      "metadata": {
+        "id": "_RqU9LMtu5_B"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def cnn_model():\n",
+        "\n",
+        "  model= tf.keras.models.Sequential()\n",
+        "  model.add(Conv2D(32, kernel_size=(3, 3), padding='same', activation='relu', input_shape=(48, 48,1)))\n",
+        "  model.add(Conv2D(64,(3,3), padding='same', activation='relu' ))\n",
+        "  model.add(BatchNormalization())\n",
+        "  model.add(MaxPool2D(pool_size=(2, 2)))\n",
+        "  model.add(Dropout(0.25))\n",
+        "\n",
+        "  model.add(Conv2D(128,(5,5), padding='same', activation='relu'))\n",
+        "  model.add(BatchNormalization())\n",
+        "  model.add(MaxPool2D(pool_size=(2, 2)))\n",
+        "  model.add(Dropout(0.25))\n",
+        "\n",
+        "  model.add(Conv2D(512,(3,3), padding='same', activation='relu', kernel_regularizer=regularizers.l2(0.01)))\n",
+        "  model.add(BatchNormalization())\n",
+        "  model.add(MaxPool2D(pool_size=(2, 2)))\n",
+        "  model.add(Dropout(0.25))\n",
+        "\n",
+        "  model.add(Conv2D(512,(3,3), padding='same', activation='relu', kernel_regularizer=regularizers.l2(0.01)))\n",
+        "  model.add(BatchNormalization())\n",
+        "  model.add(MaxPool2D(pool_size=(2, 2)))\n",
+        "  model.add(Dropout(0.25))\n",
+        "\n",
+        "  model.add(Conv2D(512,(3,3), padding='same', activation='relu', kernel_regularizer=regularizers.l2(0.01)))\n",
+        "  model.add(BatchNormalization())\n",
+        "  model.add(MaxPool2D(pool_size=(2, 2)))\n",
+        "  model.add(Dropout(0.25))\n",
+        "\n",
+        "  model.add(Flatten())\n",
+        "  model.add(Dense(256,activation = 'relu'))\n",
+        "  model.add(BatchNormalization())\n",
+        "  model.add(Dropout(0.25))\n",
+        "\n",
+        "  model.add(Dense(512,activation = 'relu'))\n",
+        "  model.add(BatchNormalization())\n",
+        "  model.add(Dropout(0.25))\n",
+        "\n",
+        "  model.add(Dense(7, activation='softmax'))\n",
+        "  model.compile(\n",
+        "    optimizer = Adam(lr=0.0001),\n",
+        "    loss='categorical_crossentropy',\n",
+        "    metrics=['accuracy'])\n",
+        "  return model"
+      ],
+      "metadata": {
+        "id": "nK10DGa6u-k3"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import tensorflow as tf\n",
+        "from keras.layers import Conv2D, MaxPool2D, Flatten,Dense,Dropout,BatchNormalization,MaxPooling2D,Activation,Input\n",
+        "from keras import regularizers\n",
+        "model = cnn_model()"
+      ],
+      "metadata": {
+        "id": "AGkb6hx-vBVs"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Then, we compile our model with Adam optimizer with 0.0001 learning rate and chose metric as accuracy, then loss as categorical crossentropy"
+      ],
+      "metadata": {
+        "id": "h0wXWjDdvcxf"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "model.compile(\n",
+        "    optimizer = Adam(lr=0.0001),\n",
+        "    loss='categorical_crossentropy',\n",
+        "    metrics=['accuracy'])"
+      ],
+      "metadata": {
+        "id": "wyPQMoe2veAB"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "model.summary()"
+      ],
+      "metadata": {
+        "id": "xbpNz28MvigY"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Early stopping"
+      ],
+      "metadata": {
+        "id": "JN731ixmv5bJ"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Adding checkpointer to implement Early Stopping to prevent overfitting."
+      ],
+      "metadata": {
+        "id": "g2IEB5y7v8kI"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from keras.callbacks import ModelCheckpoint,EarlyStopping\n",
+        "checkpointer = [EarlyStopping(monitor = 'val_accuracy', verbose = 1,\n",
+        "                              restore_best_weights=True,mode=\"max\",patience = 5),\n",
+        "                ModelCheckpoint('best_model.h5',monitor=\"val_accuracy\",verbose=1,\n",
+        "                                save_best_only=True,mode=\"max\")]"
+      ],
+      "metadata": {
+        "id": "gxSMfG29v2WR"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "history = model.fit(train_generator,\n",
+        "                    epochs=1,\n",
+        "                    batch_size=64,\n",
+        "                    verbose=1,\n",
+        "                    callbacks=[checkpointer],\n",
+        "                    validation_data=val_generator)"
+      ],
+      "metadata": {
+        "id": "yRZTaovDv2j4"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Visualizing Results"
+      ],
+      "metadata": {
+        "id": "2XbvPvaNRmXW"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "plt.plot(history.history[\"loss\"],'r', label=\"Training Loss\")\n",
+        "plt.plot(history.history[\"val_loss\"],'b', label=\"Validation Loss\")\n",
+        "plt.legend()"
+      ],
+      "metadata": {
+        "id": "_5jRcO4fv2sj"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "plt.plot(history.history[\"accuracy\"],'r',label=\"Training Accuracy\")\n",
+        "plt.plot(history.history[\"val_accuracy\"],'b',label=\"Validation Accuracy\")\n",
+        "plt.legend()"
+      ],
+      "metadata": {
+        "id": "T2v5RjXzPzmv"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "loss = model.evaluate(X_test,y_test)\n",
+        "print(\"Test Acc: \" + str(loss[1]))"
+      ],
+      "metadata": {
+        "id": "Q3i1xhJxP5u4"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "preds = model.predict(X_test)\n",
+        "y_pred = np.argmax(preds , axis = 1 )"
+      ],
+      "metadata": {
+        "id": "Zhfo7ia9P9zW"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "label_dict = {0 : 'Angry', 1 : 'Disgust', 2 : 'Fear', 3 : 'Happiness', 4 : 'Sad', 5 : 'Surprise', 6 : 'Neutral'}\n",
+        "\n",
+        "figure = plt.figure(figsize=(20, 8))\n",
+        "for i, index in enumerate(np.random.choice(X_test.shape[0], size=24, replace=False)):\n",
+        "    ax = figure.add_subplot(4, 6, i + 1, xticks=[], yticks=[])\n",
+        "    ax.imshow(np.squeeze(X_test[index]))\n",
+        "    predict_index = label_dict[(y_pred[index])]\n",
+        "    true_index = label_dict[np.argmax(y_test,axis=1)[index]]\n",
+        "\n",
+        "    ax.set_title(\"{} ({})\".format((predict_index),\n",
+        "                                  (true_index)),\n",
+        "                                  color=(\"green\" if predict_index == true_index else \"red\"))"
+      ],
+      "metadata": {
+        "id": "aBMjAazvP_1n"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "CLASS_LABELS  = ['Anger', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sadness', \"Surprise\"]\n",
+        "\n",
+        "cm_data = confusion_matrix(np.argmax(y_test, axis = 1 ), y_pred)\n",
+        "cm = pd.DataFrame(cm_data, columns=CLASS_LABELS, index = CLASS_LABELS)\n",
+        "cm.index.name = 'Actual'\n",
+        "cm.columns.name = 'Predicted'\n",
+        "plt.figure(figsize = (15,10))\n",
+        "plt.title('Confusion Matrix', fontsize = 20)\n",
+        "sns.set(font_scale=1.2)\n",
+        "ax = sns.heatmap(cm, cbar=False, cmap=\"Blues\", annot=True, annot_kws={\"size\": 16}, fmt='g')"
+      ],
+      "metadata": {
+        "id": "52S1LZhLQEC2"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from sklearn.metrics import classification_report\n",
+        "print(classification_report(np.argmax(y_test, axis = 1 ),y_pred,digits=3))"
+      ],
+      "metadata": {
+        "id": "EihTS-OjQGKG"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# 8.0 Saving the Model"
+      ],
+      "metadata": {
+        "id": "zZW4qc0sRwdH"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#import pickle library\n",
+        "import pickle\n",
+        "filename = 'model.h5'\n",
+        "pickle.dump(history,open(filename,'wb'))"
+      ],
+      "metadata": {
+        "id": "qX9BRl-8QGYw"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
